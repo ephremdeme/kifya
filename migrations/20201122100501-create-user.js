@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.FLOAT,
       },
       pin: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       city: {
         type: Sequelize.STRING,
