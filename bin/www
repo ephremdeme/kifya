@@ -20,7 +20,7 @@ app.set("port", port);
  * Create HTTP server.
  */
 
-models.sequelize.sync({ alter: true });
+// models.sequelize.sync({ alter: true });
 
 var server = http.createServer(app);
 
