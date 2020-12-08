@@ -3,8 +3,18 @@ var bcrypt = require("bcrypt");
 var { sequelize } = require("../models");
 var Transaction = require("../models").Transaction;
 var User = require("../models").User;
+const Nexmo = require('nexmo');
+
 
 var router = express.Router();
+// set nexmo  api key and secret key 
+
+// const Nexmo = require('nexmo');
+// nexmo api key 
+  const nexmo = new Nexmo({
+    apiKey: '5966280a',
+    apiSecret: 'HzMUjACBsNUNK2mq'
+  });
 
 /* GET home page. */
 router.get("/", async (req, res) => {
@@ -15,6 +25,9 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   let { amount, pin, sellerId, buyerId } = req.body;
+  const to = '251932433954';
+  const text = 'transaction successfull '
+  const from = '251932433954';
 
   try {
     let result = await sequelize.transaction(async (t) => {
@@ -27,9 +40,18 @@ router.post("/", async (req, res) => {
           buyer.balance -= amount;
           let seller = await User.findByPk(sellerId);
           seller.balance += amount;
-
+          
           buyer.save();
           seller.save();
+          // send sms to 
+          nexmo.message.sendSms(from, from, text, 
+          (err, responseData) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(JSON.stringify(responseData, null, 2));
+            }
+          });
 
           let tx = await Transaction.create(
             {
